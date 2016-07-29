@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--中心温度字体属性-->
+    <attr name="temperature_text_size" format="dimension"/>
+    <attr name="temperature_text_color" format="color"/>
+    <!--外围温度字体属性-->
+    <attr name="external_temper_text_size" format="dimension"/>
+    <attr name="external_temper_text_color" format="color"/>
+    <!--普通刻度线条属性-->
+    <attr name="dial_path_color" format="color"/>
+    <attr name="dial_path_length" format="dimension"/>
+    <attr name="dial_path_width" format="dimension"/>
+    <!--两端刻度线属性-->
+    <attr name="end_path_length" format="dimension"/>
+    <attr name="end_path_width" format="dimension"/>
+    <attr name="end_path_color" format="color"/>
+    <!--温度范围内着色线条属性-->
+    <attr name="coloration_path_color" format="color"/>
+    <attr name="coloration_path_width" format="dimension"/>
+    <attr name="coloration_path_length" format="dimension"/>
+
+    <attr name="min_temp" format="integer"/>
+    <attr name="max_temp" format="integer"/>
+    <attr name="current_temp" format="integer"/>
+
+    <declare-styleable name="CircleDial">
+        <!--中心温度字体属性-->
+        <attr name="temperature_text_size"/>
+        <attr name="temperature_text_color"/>
+        <!--外围温度字体属性-->
+        <attr name="external_temper_text_size"/>
+        <attr name="external_temper_text_color"/>
+        <!--普通刻度线条属性-->
+        <attr name="dial_path_color"/>
+        <attr name="dial_path_length"/>
+        <attr name="dial_path_width"/>
+        <!--两端刻度线属性-->
+        <attr name="end_path_length"/>
+        <attr name="end_path_width"/>
+        <attr name="end_path_color"/>
+        <!--温度范围内着色线条属性-->
+        <attr name="coloration_path_color"/>
+        <attr name="coloration_path_width"/>
+        <attr name="coloration_path_length"/>
+        <!--温度属性-->
+        <attr name="min_temp"/>
+        <attr name="max_temp"/>
+        <attr name="current_temp"/>
+    </declare-styleable>
+    
+</resources>
