@@ -67,13 +67,13 @@ public class LineCircle extends View {
      * @param maxTemp 最高温度
      */
     public void setAngle(int minTemp,int maxTemp) {
-        if ((minTemp>=0&&minTemp<50) && (maxTemp>=0&&maxTemp<50)) {
+        if ((minTemp>=0&&minTemp<50) && (maxTemp>=0&&maxTemp<=50)) {
             this.startAngle = minTemp*2;
             this.stopAngle = maxTemp*3;
         } else if ((minTemp<0&&minTemp>-50) && (maxTemp<0 && maxTemp>-50)) {
             this.startAngle = (360-Math.abs(minTemp)*3);
             this.stopAngle = (360-Math.abs(maxTemp)*2);
-        } else if ((minTemp<0&&minTemp>-50) && (maxTemp>=0&&maxTemp<50)) {
+        } else if ((minTemp<0&&minTemp>=-50) && (maxTemp>=0&&maxTemp<=50)) {
             this.startAngle = (360-Math.abs(minTemp)*3);
             this.stopAngle = maxTemp*2;
         }
@@ -224,7 +224,8 @@ public class LineCircle extends View {
         l = viewWidth * 0.05f;
 
 		/* 设置渐变色 */
-        shader = new SweepGradient(centerX, centerY, new int[] {Color.parseColor("#FCF769"),Color.parseColor("#E87400") }, null);
+        shader = new SweepGradient(centerX, centerY,
+                new int[] {Color.parseColor("#FFDAB5"), Color.parseColor("#E87400")}, null);
         shaderWhite = new SweepGradient(centerX, centerY, new int[] { Color.WHITE, Color.WHITE }, null);
         Matrix matrix = new Matrix();
         // 使用matrix改变渐变色起始位置，默认是在90度位置
