@@ -7,17 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 
-import yyl.windcloud.Widget.LineCircle;
+import yyl.windcloud.Widget.CircleDial;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int TAG = 1;
 
-    private LineCircle mLineCircle;
+    private CircleDial mCircleDial;
     private EditText inputMin,inputMax,inputCurrent;
     private Button btnSure;
 
@@ -28,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case TAG:
-                    mLineCircle.setAngle(min,max);
-                    mLineCircle.setStartTem(min);
-                    mLineCircle.setStopTem(max);
-                    mLineCircle.setCenterTemper(center1);
+                    mCircleDial.setAngle(min,max);
+                    mCircleDial.setStartTem(min);
+                    mCircleDial.setStopTem(max);
+                    mCircleDial.setCenterTemper(center1);
             }
         }
     };
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLineCircle = (LineCircle) findViewById(R.id.temp_line_dial);
+        mCircleDial = (CircleDial) findViewById(R.id.temp_line_dial);
         inputMin = (EditText) findViewById(R.id.min_temp);
         inputMax = (EditText) findViewById(R.id.max_temp);
         inputCurrent = (EditText) findViewById(R.id.current_temp);

@@ -3,7 +3,6 @@ package yyl.windcloud.Widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
@@ -11,35 +10,33 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.orhanobut.logger.Logger;
-
 /**
  * Created by yinyiliang on 2016/7/26 0026.
  */
-public class LineCircle extends View {
+public class CircleDial extends View {
     private float centerX, centerY;
-    private int viewWidth, viewHeight;
-    private Paint linePaint;
-    private TextPaint whitePaint;
+    private Paint linePaint; // 线条画笔
+    private TextPaint mTextPaint; //文字画笔
     // 有渐变颜色的旋转起止角度
     private float startAngle ,stopAngle;
     // 圆半径 线长度
     private float r, l;
-    private Shader shader, shaderWhite;
-    //起止温度
-    private int startTem = 25,stopTem = 36;
-    //中心实时温度
+    //设置渐变色
+    private Shader mShader, mWhiteShader;
+    //起止温度 默认情况下为25 35
+    private int startTem = 25,stopTem = 35;
+    //中心实时温度 默认情况下为28
     private int centerTemper = 28;
 
-    public LineCircle(Context context) {
+    public CircleDial(Context context) {
         this(context,null);
     }
 
-    public LineCircle(Context context, AttributeSet attrs) {
+    public CircleDial(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public LineCircle(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CircleDial(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -53,10 +50,10 @@ public class LineCircle extends View {
         linePaint.setStrokeWidth(3);
         linePaint.setAntiAlias(true);
 
-        whitePaint = new TextPaint();
-        whitePaint.setColor(Color.WHITE);
-        whitePaint.setStrokeWidth(4);
-        whitePaint.setAntiAlias(true);
+        mTextPaint = new TextPaint();
+        mTextPaint.setColor(Color.WHITE);
+        mTextPaint.setStrokeWidth(4);
+        mTextPaint.setAntiAlias(true);
 
         setAngle(startTem,stopTem);
     }
@@ -90,7 +87,7 @@ public class LineCircle extends View {
     }
     /**
      * 设置起始温度
-     * @param startTem
+     * @param startTem 最小温度
      */
     public void setStartTem(int startTem){
         this.startTem = startTem;
@@ -99,7 +96,7 @@ public class LineCircle extends View {
 
     /**
      * 设置截止温度
-     * @param stopTem
+     * @param stopTem 最高温度
      */
     public void setStopTem(int stopTem){
         this.stopTem = stopTem;
@@ -123,15 +120,15 @@ public class LineCircle extends View {
                     ((startAngle>180&&startAngle<360) && (stopAngle>180&&stopAngle<360))){
                 //当起始角度和终止角度都在左边半圆 或者都在右边半圆时
                 if (angle <= stopAngle && angle >= startAngle) {
-                    linePaint.setShader(shader);
+                    linePaint.setShader(mShader);
                 } else
-                    linePaint.setShader(shaderWhite);
+                    linePaint.setShader(mWhiteShader);
             } else if ((startAngle>180&&startAngle<=360) && (stopAngle>=0&&stopAngle<180)) {
                 //当起始角度在左边半圆  终止角度在右边半圆时
                 if ((angle>=0&&angle<=stopAngle) || (angle>=startAngle&&angle<=360)) {
-                    linePaint.setShader(shader);
+                    linePaint.setShader(mShader);
                 } else {
-                    linePaint.setShader(shaderWhite);
+                    linePaint.setShader(mWhiteShader);
                 }
             }
 
@@ -189,52 +186,54 @@ public class LineCircle extends View {
      */
     private void drawCenterTem(Canvas canvas) {
 
-        whitePaint.setTextSize(r * 0.6f);
-        whitePaint.setAntiAlias(true);
-        whitePaint.setTextAlign(Paint.Align.CENTER);
-        float textY = centerY - (whitePaint.descent() + whitePaint.ascent()) / 2;
-        canvas.drawText(centerTemper+"°", centerX, textY, whitePaint);
+        mTextPaint.setTextSize(r * 0.6f);
+        mTextPaint.setAntiAlias(true);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        float textY = centerY - (mTextPaint.descent() + mTextPaint.ascent()) / 2;
+        canvas.drawText(centerTemper+"°", centerX, textY, mTextPaint);
     }
 
     /**
      * 画起始温度
      */
     private void drawStartTem(Canvas canvas) {
-        whitePaint.setTextSize(r * 0.1f);
+        mTextPaint.setTextSize(r * 0.1f);
         canvas.drawText(startTem + "°",  calculateX(r * 1.1f, startAngle),
-                calculateY(r * 1.1f, startAngle), whitePaint);
+                calculateY(r * 1.1f, startAngle), mTextPaint);
     }
 
     /**
      * 画截至温度
      */
     private void drawStopTem(Canvas canvas) {
-        whitePaint.setTextSize(r * 0.1f);
-        canvas.drawText(stopTem + "°", calculateX(r * 1.1f, stopAngle), calculateY(r * 1.1f, stopAngle), whitePaint);
+        mTextPaint.setTextSize(r * 0.1f);
+        canvas.drawText(stopTem + "°", calculateX(r * 1.1f, stopAngle), calculateY(r * 1.1f, stopAngle), mTextPaint);
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
-        viewWidth = getWidth();
-        viewHeight = getHeight();
+        int viewWidth = getWidth();
+        int viewHeight = getHeight();
 
         centerX = viewWidth / 2f;
         centerY = viewHeight / 2f;
         r = viewWidth * 0.4f;
         l = viewWidth * 0.05f;
 
-		/* 设置渐变色 */
-        shader = new SweepGradient(centerX, centerY,
-                new int[] {Color.parseColor("#FFDAB5"), Color.parseColor("#E87400")}, null);
-        shaderWhite = new SweepGradient(centerX, centerY, new int[] { Color.WHITE, Color.WHITE }, null);
-        Matrix matrix = new Matrix();
-        // 使用matrix改变渐变色起始位置，默认是在90度位置
-        matrix.setRotate(45, centerX, centerY);
-        shader.setLocalMatrix(matrix);
-        linePaint.setShader(shader);
+		//设置渐变色
+        mShader = new SweepGradient(centerX, centerY, new int[] {
+                        Color.parseColor("#FB8B13"),
+                        Color.parseColor("#FB1414"),
+                        Color.parseColor("#1488FB"),
+                        Color.parseColor("#13FBE0"),
+                        Color.parseColor("#8BFB13"),
+                        Color.parseColor("#FB8B13")}, null);
+        mWhiteShader = new SweepGradient(centerX, centerY, new int[] {
+                        Color.WHITE,
+                        Color.WHITE }, null);
+        linePaint.setShader(mShader);
 
         invalidate();
-        super.onWindowFocusChanged(hasWindowFocus);
     }
 
 }
