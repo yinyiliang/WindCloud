@@ -10,7 +10,31 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.orhanobut.logger.Logger;
+
 /**
+ #         ┌─┐       ┌─┐
+ #      ┌──┘ ┴───────┘ ┴──┐
+ #      │                 │
+ #      │       ───       │
+ #      │  ─┬┘       └┬─  │
+ #      │                 │
+ #      │       ─┴─       │
+ #      │                 │
+ #      └───┐         ┌───┘
+ #          │         │
+ #          │         │
+ #          │         │
+ #          │         └──────────────┐
+ #          │                        │
+ #          │                        ├─┐
+ #          │                        ┌─┘
+ #          │                        │
+ #          └─┐  ┐  ┌───────┬──┐  ┌──┘
+ #            │ ─┤ ─┤       │ ─┤ ─┤
+ #            └──┴──┘       └──┴──┘
+ #                神兽保佑
+ #                代码无BUG!
  * Created by yinyiliang on 2016/7/26 0026.
  */
 public class CircleDial extends View {
@@ -60,19 +84,37 @@ public class CircleDial extends View {
 
     /**
      * 根据最低温度和最高温度计算出 开始和结束角度
+     * 为了简单计算 我们设定开始角度和结束角度夹角为60°
      * @param minTemp 最低温度
      * @param maxTemp 最高温度
      */
     public void setAngle(int minTemp,int maxTemp) {
-        if ((minTemp>=0&&minTemp<50) && (maxTemp>=0&&maxTemp<=50)) {
+        if ((minTemp>=0&&minTemp<50) && (maxTemp>=0&&maxTemp<=60)) {
+            //当最低温度大于0时
             this.startAngle = minTemp*2;
-            this.stopAngle = maxTemp*3;
-        } else if ((minTemp<0&&minTemp>-50) && (maxTemp<0 && maxTemp>-50)) {
-            this.startAngle = (360-Math.abs(minTemp)*3);
-            this.stopAngle = (360-Math.abs(maxTemp)*2);
-        } else if ((minTemp<0&&minTemp>=-50) && (maxTemp>=0&&maxTemp<=50)) {
-            this.startAngle = (360-Math.abs(minTemp)*3);
+
+            if (maxTemp >= 50) { //当温度大于50°时，末日的时候...最终角度最大值为150°
+                this.stopAngle = 50*3;
+            } else {
+                this.stopAngle = startAngle+60;
+            }
+
+        } else if ((minTemp<0&&minTemp>-50) && (maxTemp<=0 && maxTemp>-50)) {
+            //当最低温度小于0、最大温度小于或者等于0时
+            if (maxTemp == 0) {
+                //最高温度等于0时
+                this.stopAngle = 0;
+                this.startAngle = (360-60);
+            } else {
+                this.stopAngle = (360-Math.abs(maxTemp)*2);
+                this.startAngle = stopAngle - 60;
+                Logger.d(startAngle);
+                Logger.d(stopAngle);
+            }
+        } else if ((minTemp<0&&minTemp>=-50) && (maxTemp>0&&maxTemp<=50)) {
+            //当最低温度小于0，最高温度大于0时
             this.stopAngle = maxTemp*2;
+            this.startAngle = (360-(60-stopAngle));
         }
         invalidate();
     }
@@ -86,19 +128,10 @@ public class CircleDial extends View {
         invalidate();
     }
     /**
-     * 设置起始温度
-     * @param startTem 最小温度
+     * 设置温度范围温度
      */
-    public void setStartTem(int startTem){
+    public void setMinMaxTem(int startTem, int stopTem) {
         this.startTem = startTem;
-        invalidate();
-    }
-
-    /**
-     * 设置截止温度
-     * @param stopTem 最高温度
-     */
-    public void setStopTem(int stopTem){
         this.stopTem = stopTem;
         invalidate();
     }
@@ -211,7 +244,8 @@ public class CircleDial extends View {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasWindowFocus) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         int viewWidth = getWidth();
         int viewHeight = getHeight();
 
@@ -220,20 +254,46 @@ public class CircleDial extends View {
         r = viewWidth * 0.4f;
         l = viewWidth * 0.05f;
 
-		//设置渐变色
+        //设置渐变色
         mShader = new SweepGradient(centerX, centerY, new int[] {
-                        Color.parseColor("#FB8B13"),
-                        Color.parseColor("#FB1414"),
-                        Color.parseColor("#1488FB"),
-                        Color.parseColor("#13FBE0"),
-                        Color.parseColor("#8BFB13"),
-                        Color.parseColor("#FB8B13")}, null);
+                Color.parseColor("#FB8B13"),
+                Color.parseColor("#FB1414"),
+                Color.parseColor("#1488FB"),
+                Color.parseColor("#13FBE0"),
+                Color.parseColor("#8BFB13"),
+                Color.parseColor("#FB8B13")}, null);
         mWhiteShader = new SweepGradient(centerX, centerY, new int[] {
-                        Color.WHITE,
-                        Color.WHITE }, null);
+                Color.WHITE,
+                Color.WHITE }, null);
         linePaint.setShader(mShader);
 
         invalidate();
     }
+
+//    @Override
+//    public void onWindowFocusChanged(boolean hasWindowFocus) {
+//        int viewWidth = getWidth();
+//        int viewHeight = getHeight();
+//
+//        centerX = viewWidth / 2f;
+//        centerY = viewHeight / 2f;
+//        r = viewWidth * 0.4f;
+//        l = viewWidth * 0.05f;
+//
+//		//设置渐变色
+//        mShader = new SweepGradient(centerX, centerY, new int[] {
+//                        Color.parseColor("#FB8B13"),
+//                        Color.parseColor("#FB1414"),
+//                        Color.parseColor("#1488FB"),
+//                        Color.parseColor("#13FBE0"),
+//                        Color.parseColor("#8BFB13"),
+//                        Color.parseColor("#FB8B13")}, null);
+//        mWhiteShader = new SweepGradient(centerX, centerY, new int[] {
+//                        Color.WHITE,
+//                        Color.WHITE }, null);
+//        linePaint.setShader(mShader);
+//
+//        invalidate();
+//    }
 
 }

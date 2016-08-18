@@ -28,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what){
                 case TAG:
                     mCircleDial.setAngle(min,max);
-                    mCircleDial.setStartTem(min);
-                    mCircleDial.setStopTem(max);
+                    mCircleDial.setMinMaxTem(min,max);
                     mCircleDial.setCenterTemper(center1);
             }
         }
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
                         max = Integer.parseInt(inputMax.getText().toString());
                         center1 = Integer.parseInt(inputCurrent.getText().toString());
 
-                        Logger.d(min+"---"+max+"---"+center1);
                         Message msg = new Message();
                         msg.what = TAG;
                         mHandler.sendMessage(msg);
